@@ -2,16 +2,43 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Repositories\UserRepositoryEloquent;
+use App\Transformers\UserTransformer;
+use Illuminate\Http\Request;
 use JWTAuth;
-use App\User;
+use JWTFactory;
+use League\Fractal\Manager;
 use Response;
 use Validator;
-use JWTFactory;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class RegisterController extends Controller
 {
+    /**
+     * @var Manager
+     */
+    private $fractal;
+
+    /**
+     * @var UserTransformer
+     */
+    private $userTransformer;
+
+    /**
+     * @var UserRepositoryEloquent
+     */
+    protected $userRepository;
+
+    public function __construct(
+        Manager $fractal,
+        UserTransformer $userTransformer,
+        UserRepositoryEloquent $userRepository
+    ) {
+        $this->fractal = $fractal;
+        $this->userTransformer = $userTransformer;
+        $this->userRepository = $userRepository;
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -22,13 +49,15 @@ class RegisterController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        User::create([
+        $this->userRepository->create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => bcrypt($request->get('password')),
         ]);
-        $user = User::first();
+        $user = $this->userRepository->first();
         $token = JWTAuth::fromUser($user);
+
+        // @todo: send email to user verify
 
         return Response::json(compact('token'));
     }

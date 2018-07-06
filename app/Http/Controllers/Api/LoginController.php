@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Validator;
-use JWTFactory;
+use Illuminate\Http\Request;
 use JWTAuth;
-use App\User;
-use Illuminate\Support\Facades\Auth;
+use JWTFactory;
+use Validator;
 
 class LoginController extends Controller
 {

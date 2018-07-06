@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\User;
 use League\Fractal\Manager;
 use Illuminate\Http\Request;
 use League\Fractal\Resource\Item;
 use App\Http\Controllers\Controller;
-use App\Repositories\UserRepository;
 use App\Transformers\UserTransformer;
 use League\Fractal\Resource\Collection;
 use App\Repositories\UserRepositoryEloquent;
@@ -31,7 +29,7 @@ class UsersController extends Controller
 
     public function __construct(Manager $fractal, UserTransformer $userTransformer, UserRepositoryEloquent $userRepository)
     {
-        $this->fractal = $fractal;;
+        $this->fractal = $fractal;
         $this->userTransformer = $userTransformer;
         $this->userRepository = $userRepository;
     }
